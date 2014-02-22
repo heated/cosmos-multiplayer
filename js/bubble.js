@@ -20,7 +20,7 @@
         Math.PI * 2
       );
 
-      ctx.fill();
+      ctx.stroke();
     },
 
     shrink: function(amount) {
@@ -29,6 +29,13 @@
 
     grow: function(amount) {
       this.radius += amount;
+    },
+
+    collidesWith: function(bubble) {
+      var dx = Math.abs(this.pos[0] - bubble.pos[0]);
+      var dy = Math.abs(this.pos[1] - bubble.pos[1]);
+      var dr = this.radius + bubble.radius;
+      return (dx * dx + dy * dy) < (dr * dr);
     }
   });
 

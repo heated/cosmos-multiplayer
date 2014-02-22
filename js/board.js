@@ -9,12 +9,22 @@
 
   _(Board.prototype).extend({
     makeBubbles: function(num) {
-      for(var i = 0; i < num; i++) {
-        this.bubbles.push(Cosmos.Bubble.random());
+      var bubbles = this.bubbles;
+      while(bubbles.length < num) {
+        var newBubble = Cosmos.Bubble.random();
+        
+        var collides = bubbles.some(function(bubble) {
+          return newBubble.collidesWith(bubble);
+        })
+
+        if(!collides) {
+          bubbles.push(newBubble);
+        }
       }
     },
 
     render: function() {
+      this.ctx.clearRect(0, 0, 800, 500);
       var that = this;
       this.bubbles.forEach(function(bubble) {
         bubble.render(that.ctx);
