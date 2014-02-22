@@ -34,16 +34,12 @@
 
   _(Bubble).extend({
     random: function() {
-      return new Bubble(10, 
-                        [100 + Math.random() * 100, 
-                         100 + Math.random() * 100], 
+      var radius = Math.random() * 20 + 5;
+
+      return new Bubble(radius, 
+                        [Math.random() * (800 - 2 * radius) + radius, 
+                         Math.random() * (500 - 2 * radius) + radius], 
                         [0, 0]);
     }
   });
 })(this);
-
-$(function() {
-  window.bubble = Cosmos.Bubble.random()
-  // console.log($('#canvas'))
-  window.bubble.render($('#canvas')[0].getContext("2d"));
-});
