@@ -8,6 +8,40 @@
   }
 
   _(Bubble.prototype).extend({
+    
+    collidesWith: function(bubble) {
+      var dx = Math.abs(this.pos[0] - bubble.pos[0]);
+      var dy = Math.abs(this.pos[1] - bubble.pos[1]);
+      var dr = this.radius + bubble.radius;
+      return (dx * dx + dy * dy) < (dr * dr);
+    },
+    
+    grow: function(amount) {
+      this.radius += amount;
+    },
+    
+    handleWalls: function () {
+      var x = this.pos[0];
+      if (x + this.radius > 800 || x - this.radius < 0) {
+        this.vel[0] = -this.vel[0];
+      }
+      
+      var y = this.pos[1];
+      if (y + this.radius > 500 || y - this.radius < 0) {
+        this.vel[1] = -this.vel[1];
+      }
+    },
+    
+    mass: function() {
+      return Math.pow(this.radius, 2);
+    },
+    
+    move: function() {
+      this.pos[0] += this.vel[0];
+      this.pos[1] += this.vel[1];
+      this.handleWalls();
+    },
+    
     render: function(ctx) {
       ctx.fillStyle = "black";
       ctx.beginPath();
@@ -25,28 +59,6 @@
 
     shrink: function(amount) {
       this.radius -= amount;
-    },
-
-    grow: function(amount) {
-      this.radius += amount;
-    },
-
-    collidesWith: function(bubble) {
-      var dx = Math.abs(this.pos[0] - bubble.pos[0]);
-      var dy = Math.abs(this.pos[1] - bubble.pos[1]);
-      var dr = this.radius + bubble.radius;
-      return (dx * dx + dy * dy) < (dr * dr);
-    },
-
-    move: function() {
-      this.pos[0] += this.vel[0];
-      this.pos[1] += this.vel[1];
-
-      // BOUNCING??!?
-    },
-
-    mass: function() {
-      return Math.pow(this.radius, 2);
     }
   });
 
