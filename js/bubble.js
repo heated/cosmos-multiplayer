@@ -1,11 +1,12 @@
 (function(root) {
   var Cosmos = root.Cosmos = (root.Cosmos || {});
 
-  var Bubble = Cosmos.Bubble = function(radius, pos, vel, board) {
+  var Bubble = Cosmos.Bubble = function(radius, pos, vel, board, color) {
     this.radius = radius;
     this.pos = pos;
     this.vel = vel;
     this.board = board;
+    this.color = color || "black";
   }
 
   _(Bubble.prototype).extend({
@@ -86,7 +87,7 @@
     },
     
     render: function(ctx) {
-      ctx.fillStyle = "black";
+      // ctx.fillStyle = "black";
       ctx.beginPath();
 
       ctx.arc(
@@ -97,6 +98,7 @@
         Math.PI * 2
       );
 
+      ctx.strokeStyle = this.color;
       ctx.stroke();
     },
 
@@ -115,8 +117,8 @@
       return new Bubble(radius, 
                         [Math.random() * (800 - 2 * radius) + radius, 
                          Math.random() * (500 - 2 * radius) + radius], 
-                        [Math.cos(direction), 
-                         Math.sin(direction)],
+                        [Math.cos(direction) * 0.1, 
+                         Math.sin(direction) * 0.1],
                          board);
     }
   });

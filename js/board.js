@@ -4,7 +4,7 @@
   var Board = Cosmos.Board = function(ctx) {
     this.ctx = ctx;
     this.bubbles = [];
-    this.makeBubbles(200);
+    this.makeBubbles(10);
   }
 
   _(Board.prototype).extend({
@@ -43,6 +43,18 @@
           bubbles.push(newBubble);
         }
       }
+    },
+    
+    makePlayerBubble: function () {
+      var playerBubble = new Cosmos.Bubble(
+        40,
+        [800/2, 500/2],
+        [0,0],
+        this,
+        "blue"
+      );
+      this.bubbles.push(playerBubble);
+      return playerBubble;
     },
 
     render: function() {

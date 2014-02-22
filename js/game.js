@@ -5,6 +5,7 @@
     var canvas = $('#canvas')[0];
     var ctx = canvas.getContext("2d");
     this.board = new Cosmos.Board(ctx);
+    this.player = this.board.makePlayerBubble();
   }
 
   Game.INTERVAL = 1000 / 60;
