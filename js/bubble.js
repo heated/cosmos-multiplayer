@@ -12,35 +12,24 @@
   _(Bubble.prototype).extend({
     
     absorb: function (bubble) {
-      var bigR = this.radius;
-      var smallR = bubble.radius;
       var dSq = this.distanceSq(bubble);
-      var d = Math.sqrt(dSq);
-      var newBigR = bigR;
-      var newSmallR = smallR;
-      
-      // handle case where one bubble completely absorbs another
-      var sq = function (n) { return n * n };
-      var totalMass = sq(bigR) + sq(smallR);
-      var totallyAbsorbed = (totalMass >= dSq);
-      if (totallyAbsorbed) {
+      var totalMass = this.mass() + bubble.mass();
+
+      // completely absorbed
+      if (totalMass >= dSq) {
         this.radius = Math.sqrt(totalMass);
         this.board.delete(bubble);
-        return;
-      }
+      } else {
+        var d = Math.sqrt(dSq);
 
-      // find new radii such that mass is conserved and bubbles are still
-      // touching
-      var absorbed = false;
-      while (!absorbed) {
-        newBigR += 0.01;
-        newSmallR = d - newBigR;
-        absorbed = (Math.abs((newBigR * newSmallR) -
-                        ((dSq - (bigR * bigR) - (smallR * smallR)) / 2)) < 10);
+        // solve for new radius such that total area is conserved
+        // and bubbles are still touching
+        // wolfram alpha solution to the quadratic: "solve for x in x^2 + (d-x)^2 = r^2 + R^2"
+        var quadratic = (d + Math.sqrt( 2 * totalMass - d * d )) / 2;
+
+        this.radius = quadratic;
+        bubble.radius = d - this.radius;
       }
-      
-      this.radius = newBigR;
-      bubble.radius = newSmallR;
     },
     
     changeVel: function (dir) {
@@ -55,7 +44,7 @@
       this.vel[1] += deltas[dir][1];
     },
     
-    collidesWith: function(bubble) {
+    collidesWith: function (bubble) {
       var dr = this.radius + bubble.radius;
       return this.distanceSq(bubble) < (dr * dr);
     },
@@ -65,8 +54,12 @@
       var dy = Math.abs(this.pos[1] - bubble.pos[1]);
       return (dx * dx + dy * dy);
     },
+
+    distance: function (bubble) {
+      return Math.sqrt(this.distanceSq(bubble));
+    },
     
-    grow: function(amount) {
+    grow: function (amount) {
       this.radius += amount;
     },
     
@@ -88,17 +81,17 @@
       }
     },
     
-    mass: function() {
+    mass: function () {
       return Math.pow(this.radius, 2);
     },
     
-    move: function() {
+    move: function () {
       this.pos[0] += this.vel[0];
       this.pos[1] += this.vel[1];
       this.handleWalls();
     },
     
-    render: function(ctx) {
+    render: function (ctx) {
       // ctx.fillStyle = "black";
       ctx.beginPath();
 
@@ -114,7 +107,7 @@
       ctx.stroke();
     },
 
-    shrink: function(amount) {
+    shrink: function (amount) {
       this.radius -= amount;
     }
     
@@ -122,7 +115,7 @@
   });
 
   _(Bubble).extend({
-    random: function(board) {
+    random: function (board) {
       var radius = Math.random() * 20 + 5;
       var direction = Math.random() * Math.PI * 2;
 
