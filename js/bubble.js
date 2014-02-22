@@ -36,17 +36,24 @@
       var dy = Math.abs(this.pos[1] - bubble.pos[1]);
       var dr = this.radius + bubble.radius;
       return (dx * dx + dy * dy) < (dr * dr);
+    },
+
+    move: function() {
+      this.pos[0] += this.vel[0];
+      this.pos[1] += this.vel[1];
     }
   });
 
   _(Bubble).extend({
     random: function() {
       var radius = Math.random() * 20 + 5;
+      var direction = Math.random() * Math.PI * 2;
 
       return new Bubble(radius, 
                         [Math.random() * (800 - 2 * radius) + radius, 
                          Math.random() * (500 - 2 * radius) + radius], 
-                        [0, 0]);
+                        [Math.cos(direction), 
+                         Math.sin(direction)]);
     }
   });
 })(this);

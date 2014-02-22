@@ -32,7 +32,9 @@
     },
 
     update: function() {
-
+      this.bubbles.forEach(function(bubble) {
+        bubble.move();
+      });
     }
   });
 })(this);
