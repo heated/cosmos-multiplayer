@@ -2,7 +2,8 @@
   var Cosmos = root.Cosmos = (root.Cosmos || {});
 
   var Game = Cosmos.Game = function() {
-    var ctx = $('#canvas')[0].getContext("2d");
+    var canvas = $('#canvas')[0];
+    var ctx = canvas.getContext("2d");
     this.board = new Cosmos.Board(ctx);
   }
 
