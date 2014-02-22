@@ -4,14 +4,36 @@
   var Board = Cosmos.Board = function(ctx) {
     this.ctx = ctx;
     this.bubbles = [];
-    this.makeBubbles(50);
+    this.makeBubbles(200);
   }
 
   _(Board.prototype).extend({
+    
+    delete: function (bubble) {
+      var bubbleIdx = this.bubbles.indexOf(bubble);
+      if (bubbleIdx != -1) {
+        this.bubbles.splice(bubbleIdx, 1);
+      }
+    },
+    
+    handleCollidingBubbles: function () {
+      var board = this;
+      
+      board.bubbles.forEach(function (bubble) {
+        board.bubbles.forEach(function (otherBubble) {
+          if (bubble == otherBubble) {
+            return;
+          } else if (bubble.collidesWith(otherBubble)) {
+            bubble.handleCollision(otherBubble);
+          }
+        })
+      });
+    },
+    
     makeBubbles: function(num) {
       var bubbles = this.bubbles;
       while(bubbles.length < num) {
-        var newBubble = Cosmos.Bubble.random();
+        var newBubble = Cosmos.Bubble.random(this);
         
         var collides = bubbles.some(function(bubble) {
           return newBubble.collidesWith(bubble);
@@ -35,6 +57,8 @@
       this.bubbles.forEach(function(bubble) {
         bubble.move();
       });
+      
+      this.handleCollidingBubbles();
     }
   });
 })(this);
