@@ -4,7 +4,7 @@
   var Board = Cosmos.Board = function(ctx) {
     this.ctx = ctx;
     this.bubbles = [];
-    this.makeBubbles(200);
+    this.makeBubbles(100);
   }
 
   _(Board.prototype).extend({
