@@ -43,6 +43,18 @@
       bubble.radius = newSmallR;
     },
     
+    changeVel: function (dir) {
+      var deltas = {
+        up: [0, -0.2],
+        down: [0, 0.2],
+        left: [-0.2, 0],
+        right: [0.2, 0]
+      };
+      
+      this.vel[0] += deltas[dir][0];
+      this.vel[1] += deltas[dir][1];
+    },
+    
     collidesWith: function(bubble) {
       var dr = this.radius + bubble.radius;
       return this.distanceSq(bubble) < (dr * dr);
