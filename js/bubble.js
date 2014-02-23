@@ -40,8 +40,16 @@
         right: [0.2, 0]
       };
       
+      var opposites = {
+        up: "down",
+        down: "up",
+        left: "right",
+        right: "left"
+      };
+      
       this.vel[0] += deltas[dir][0];
       this.vel[1] += deltas[dir][1];
+      this.expel(opposites[dir]);
     },
     
     collidesWith: function (bubble) {
@@ -57,6 +65,37 @@
 
     distance: function (bubble) {
       return Math.sqrt(this.distanceSq(bubble));
+    },
+    
+    expel: function (dir) {
+      var radius = Math.sqrt(this.mass() * 0.05);
+      
+      var x = this.pos[0];
+      var y = this.pos[1];
+      var distance = this.radius + radius;
+      var positions = {
+        up: [x, y - distance],
+        down: [x, y + distance],
+        left: [x - distance, y],
+        right: [x + distance, y]
+      };
+      
+      var velocities = {
+        up: [0, -0.2],
+        down: [0, 0.2],
+        left: [-0.2, 0],
+        right: [0.2, 0]
+      };
+            
+      var expelled = new Bubble(
+        radius,
+        positions[dir],
+        velocities[dir],
+        this.board
+      );
+      
+      this.board.add(expelled);
+      this.radius = Math.sqrt(this.mass() * 0.95);
     },
     
     grow: function (amount) {

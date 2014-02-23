@@ -9,6 +9,10 @@
 
   _(Board.prototype).extend({
     
+    add: function (bubble) {
+      this.bubbles.push(bubble);
+    },
+    
     delete: function (bubble) {
       var bubbleIdx = this.bubbles.indexOf(bubble);
       if (bubbleIdx != -1) {
