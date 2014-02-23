@@ -1,7 +1,8 @@
 (function(root) {
   var Cosmos = root.Cosmos = (root.Cosmos || {});
 
-  var Board = Cosmos.Board = function (ctx) {
+  var Board = Cosmos.Board = function (game, ctx) {
+    this.game = game;
     this.ctx = ctx;
     this.bubbles = [];
     this.makeBubbles(200);

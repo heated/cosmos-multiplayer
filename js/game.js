@@ -4,7 +4,7 @@
   var Game = Cosmos.Game = function() {
     this.canvas = $('#canvas')[0];
     var ctx = this.canvas.getContext("2d");
-    this.board = new Cosmos.Board(ctx);
+    this.board = new Cosmos.Board(this, ctx);
     this.player = this.board.makePlayerBubble();
     this.totalMass = this.board.totalMass();
     this.over = false;

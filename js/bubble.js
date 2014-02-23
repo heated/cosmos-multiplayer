@@ -6,7 +6,7 @@
     this.pos = pos;
     this.vel = vel;
     this.board = board;
-    this.color = color || "white";
+    this.color = color;
   }
 
   _(Bubble.prototype).extend({
@@ -138,9 +138,23 @@
         return pos;
       }
     },
+
+    gradientMap: function (num) {
+      return Math.floor(16 * num).toString(16);
+    },
     
     render: function (ctx) {
-      ctx.fillStyle = "black";
+      if(this.color) {
+        ctx.strokeStyle = this.color;
+      } else {
+        var warning = this.radius / this.board.game.player.radius;
+
+        warning = this.rangeSnap(0.01, 1, (warning * 1.5) - 0.8);
+
+        chr = this.gradientMap(1 - warning);
+        ctx.strokeStyle = "#ff" + chr + chr + chr + chr;
+      }
+
       ctx.lineWidth = this.radius / 10;
       ctx.beginPath();
 
@@ -152,7 +166,6 @@
         Math.PI * 2
       );
 
-      ctx.strokeStyle = this.color;
       ctx.stroke();
     }
     
