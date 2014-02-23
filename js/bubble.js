@@ -49,29 +49,13 @@
       });
     },
     
-    changeVel: function (dir) {
-      var deltas = {
-        up: [0, -0.2],
-        down: [0, 0.2],
-        left: [-0.2, 0],
-        right: [0.2, 0]
-      };
-      
-      var opposites = {
-        up: "down",
-        down: "up",
-        left: "right",
-        right: "left"
-      };
-      
-      this.vel[0] += deltas[dir][0];
-      this.vel[1] += deltas[dir][1];
-      this.expel(opposites[dir]);
-    },
-    
     collidesWith: function (bubble) {
       var dr = this.radius + bubble.radius;
       return this.distanceSq(bubble) < (dr * dr);
+    },
+    
+    dimSnap: function (max, pos) {
+      return this.rangeSnap(this.radius, (max - this.radius), pos);
     },
         
     distanceSq: function (bubble) {
@@ -107,10 +91,6 @@
       this.vel[1] = (momentum[1] - expelledMomentum[1]) / this.mass();
     },
     
-    grow: function (amount) {
-      this.radius += amount;
-    },
-    
     handleCollision: function (bubble) {
       if (this.radius > bubble.radius) {
         this.absorb(bubble);
@@ -127,6 +107,9 @@
       if (y + this.radius > 500 || y - this.radius < 0) {
         this.vel[1] = -this.vel[1];
       }
+      
+      this.pos[0] = this.dimSnap(800, this.pos[0]);
+      this.pos[1] = this.dimSnap(500, this.pos[1]);
     },
     
     mass: function () {
@@ -146,6 +129,16 @@
       this.handleWalls();
     },
     
+    rangeSnap: function (min, max, pos) {
+      if (pos <= min) {
+        return min;
+      } else if (pos >= max) {
+        return max;
+      } else {
+        return pos;
+      }
+    },
+    
     render: function (ctx) {
       ctx.fillStyle = "black";
       ctx.beginPath();
@@ -160,12 +153,7 @@
 
       ctx.strokeStyle = this.color;
       ctx.stroke();
-    },
-
-    shrink: function (amount) {
-      this.radius -= amount;
     }
-    
     
   });
 
