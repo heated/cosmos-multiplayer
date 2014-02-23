@@ -2,7 +2,6 @@
   var Cosmos = root.Cosmos = (root.Cosmos || {});
 
   var Board = Cosmos.Board = function (game, ctx, options) {
-    // this.game = game;
     this.ctx = ctx;
     this.bubbles = [];
     this.options = options;
@@ -12,6 +11,12 @@
     
     add: function (bubble) {
       this.bubbles.push(bubble);
+    },
+    
+    data: function () {
+      return this.bubbles.map(function (bubble) {
+        return bubble.data();
+      });
     },
     
     delete: function (bubble) {
@@ -38,7 +43,7 @@
     initializeBubbles: function () {
       var board = this;
       if (!this.options || !this.options.bubbles) {
-        this.makeBubbles(100);
+        this.makeBubbles(20);
       } else {
         var bubbles = this.options.bubbles.map(function (bubbleData) {
           var newBubble = Cosmos.Bubble.fromData(bubbleData, board);
@@ -101,6 +106,7 @@
       });
       
       this.handleCollidingBubbles();
-    }
+    },
+
   });
 })(this);

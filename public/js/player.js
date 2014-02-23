@@ -2,7 +2,7 @@
   var Cosmos = root.Cosmos = (root.Cosmos || {});
 
   var Player = Cosmos.Player = function (board) {
-    var radius = 40;
+    var radius = 20;
     this.bubble = new Cosmos.Bubble(
       radius,
       [Math.random() * (800 - 2 * radius) + radius, 

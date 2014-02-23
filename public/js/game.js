@@ -33,6 +33,11 @@
       
       keys.forEach(function (key) {
         game.player.bubble.expel(keyDirOpposites[key]);
+        var data = {
+          key: key,
+          // bubbles: game.board.data()
+        };
+        game.socket.emit("keydown", data);
       });
     },
     
@@ -51,20 +56,32 @@
         console.log("connected!");
       });
       
+      game.socket.on("keydown", function (data) {
+        var playerIdx = playerById(data.id);
+        var player = game.remotePlayers[playerIdx];
+        
+        // game.board.updateFromData(data.bubbles);
+        
+        var keyDirOpposites = {
+          38: 3 * Math.PI / 2, // down
+          40: Math.PI / 2, // up
+          37: 0, // right
+          39: Math.PI // left
+        };
+        
+        player.bubble.expel(keyDirOpposites[data.key]);
+      });
+      
       game.socket.on("new-player", function (data) {
-        var newBubble = new Cosmos.Bubble(
-          data.radius,
-          data.pos,
-          data.vel,
-          game.board,
-          data.color
-        );
+        console.log("look a new player!");
+        var newBubble = Cosmos.Bubble.fromData(data.bubble, game.board);
         game.board.add(newBubble);
         var player = {
           id: data.id,
           bubble: newBubble
         };
         game.remotePlayers.push(player);
+        console.log(game.remotePlayers);
       });
       
       game.socket.on("remove-player", function (data) {
@@ -110,8 +127,10 @@
 
     start: function () {
       this.installSocketHandlers();
-      var bubble = this.player.bubble;
-      var data = bubble.data();
+      var bubbleData = this.player.bubble.data();
+      var data = {
+        bubble: bubbleData
+      };
       Cosmos.socket.emit("new-player", data);
       this.interval = setInterval(this.step.bind(this), Game.INTERVAL);
     },

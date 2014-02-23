@@ -2,6 +2,7 @@
   var Cosmos = root.Cosmos = (root.Cosmos || {});
 
   var Bubble = Cosmos.Bubble = function(radius, pos, vel, board, color) {
+    this.id = Math.random();
     this.radius = radius;
     this.pos = pos;
     this.vel = vel;
@@ -56,6 +57,7 @@
     
     data: function () {
       var data = {
+        id: this.id,
         radius: this.radius,
         pos: this.pos,
         vel: this.vel,
