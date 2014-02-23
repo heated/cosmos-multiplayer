@@ -38,12 +38,19 @@
     installSocketHandlers: function () {
       var game = this;
       
+      var playerById = function (id) {
+        for (var i in game.remotePlayers) {
+          if (game.remotePlayers[i].id == id) {
+            return i;
+          } 
+        }
+      };
+      
       game.socket.on("connect", function () {
         console.log("connected!");
       });
       
       game.socket.on("new-player", function (data) {
-        game.remotePlayers.push(data);
         var newBubble = new Cosmos.Bubble(
           data.radius,
           data.pos,
@@ -52,6 +59,19 @@
           data.color
         );
         game.board.add(newBubble);
+        var player = {
+          id: data.id,
+          bubble: newBubble
+        };
+        game.remotePlayers.push(player);
+        console.log(game.remotePlayers);
+      });
+      
+      game.socket.on("remove-player", function (data) {
+        var playerIdx = playerById(data.id);
+        var player = game.remotePlayers[playerIdx];
+        game.board.delete(player.bubble);
+        game.remotePlayers.splice(playerIdx, 1);
       });
     },
     
