@@ -1,4 +1,4 @@
-(function(root) {
+(function (root) {
   var Cosmos = root.Cosmos = (root.Cosmos || {});
 
   var Bubble = Cosmos.Bubble = function(radius, pos, vel, board, color) {

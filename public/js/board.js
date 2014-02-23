@@ -1,11 +1,13 @@
 (function(root) {
   var Cosmos = root.Cosmos = (root.Cosmos || {});
 
-  var Board = Cosmos.Board = function (game, ctx) {
-    this.game = game;
+  var Board = Cosmos.Board = function (game, ctx, options) {
+    // this.game = game;
     this.ctx = ctx;
     this.bubbles = [];
-    this.makeBubbles(200);
+    // if (this.bubbles.length == 0) {
+    //   this.makeBubbles(100);
+    // }
   }
 
   _(Board.prototype).extend({
@@ -52,7 +54,7 @@
     
     makePlayerBubble: function () {
       var playerBubble = new Cosmos.Bubble(
-        40,
+        20,
         [800/2, 500/2],
         [0,0],
         this,
