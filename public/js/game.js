@@ -57,16 +57,18 @@
       
       game.socket.on("keydown", function (data) {
         var playerIdx = playerById(data.id);
-        var player = game.remotePlayers[playerIdx];
+        if (playerIdx != -1) {
+          var player = game.remotePlayers[playerIdx];
               
-        var keyDirs = {
-          38: Math.PI / 2, // up
-          40: 3 * Math.PI / 2, // down
-          37: Math.PI, // left
-          39: 0 // right
-        };
+          var keyDirs = {
+            38: Math.PI / 2, // up
+            40: 3 * Math.PI / 2, // down
+            37: Math.PI, // left
+            39: 0 // right
+          };
         
-        player.bubble.expel(keyDirs[data.key]);
+          player.bubble.expel(keyDirs[data.key]);
+        }
       });
       
       game.socket.on("new-player", function (data) {
