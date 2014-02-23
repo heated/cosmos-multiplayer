@@ -1,7 +1,8 @@
 (function(root) {
   var Cosmos = root.Cosmos = (root.Cosmos || {});
 
-  var Game = Cosmos.Game = function() {
+  var Game = Cosmos.Game = function(socket) {
+    this.socket = socket;
     this.canvas = $('#canvas')[0];
     var ctx = this.canvas.getContext("2d");
     this.board = new Cosmos.Board(this, ctx);
@@ -33,6 +34,14 @@
       });
     },
     
+    installSocketHandlers: function () {
+      var game = this;
+      
+      game.socket.on("connect", function () {
+        console.log("connected!");
+      });
+    },
+    
     isLost: function () {
       return this.board.bubbles.indexOf(this.player) == -1;
     },
@@ -55,6 +64,7 @@
     },
 
     start: function () {
+      this.installSocketHandlers();
       this.interval = setInterval(this.step.bind(this), Game.INTERVAL);
     },
     
@@ -66,6 +76,7 @@
 })(this);
 
 $(function () {
-  game = new Cosmos.Game();
+  Cosmos.socket = io.connect();
+  game = new Cosmos.Game(Cosmos.socket);
   game.start();
 });
