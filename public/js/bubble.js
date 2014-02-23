@@ -54,6 +54,17 @@
       return this.distanceSq(bubble) < (dr * dr);
     },
     
+    data: function () {
+      var data = {
+        radius: this.radius,
+        pos: this.pos,
+        vel: this.vel,
+        color: this.color
+      };
+      
+      return data;
+    },
+    
     dimSnap: function (max, pos) {
       return this.rangeSnap(this.radius, (max - this.radius), pos);
     },
@@ -147,7 +158,7 @@
       if(this.color) {
         ctx.strokeStyle = this.color;
       } else {
-        var warning = this.radius / this.board.game.player.radius;
+        var warning = this.radius / window.game.player.bubble.radius;
 
         warning = this.rangeSnap(0.01, 1, (warning * 1.5) - 0.8);
 
@@ -172,6 +183,15 @@
   });
 
   _(Bubble).extend({
+    
+    fromData: function (data, board) {
+      var radius = data.radius;
+      var pos = data.pos;
+      var vel = data.vel;
+      var color = data.color;
+      return new Bubble(radius, pos, vel, board, color);
+    },
+    
     random: function (board) {
       var radius = Math.random() * 20 + 5;
       var direction = Math.random() * Math.PI * 2;

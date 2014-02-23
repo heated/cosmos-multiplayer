@@ -5,9 +5,7 @@
     // this.game = game;
     this.ctx = ctx;
     this.bubbles = [];
-    // if (this.bubbles.length == 0) {
-    //   this.makeBubbles(100);
-    // }
+    this.options = options;
   }
 
   _(Board.prototype).extend({
@@ -35,6 +33,19 @@
           }
         })
       });
+    },
+    
+    initializeBubbles: function () {
+      var board = this;
+      if (!this.options || !this.options.bubbles) {
+        this.makeBubbles(100);
+      } else {
+        var bubbles = this.options.bubbles.map(function (bubbleData) {
+          var newBubble = Cosmos.Bubble.fromData(bubbleData, board);
+          return newBubble;
+        });
+        this.bubbles = this.bubbles.concat(bubbles);
+      }
     },
     
     makeBubbles: function (num) {

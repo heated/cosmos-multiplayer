@@ -7,6 +7,7 @@
     var ctx = this.canvas.getContext("2d");
     this.board = new Cosmos.Board(this, ctx, options);
     this.player = new Cosmos.Player(this.board);
+    this.board.initializeBubbles();
     this.remotePlayers = [];
     this.totalMass = this.board.totalMass();
     this.over = false;
@@ -64,7 +65,6 @@
           bubble: newBubble
         };
         game.remotePlayers.push(player);
-        console.log(game.remotePlayers);
       });
       
       game.socket.on("remove-player", function (data) {
@@ -72,6 +72,18 @@
         var player = game.remotePlayers[playerIdx];
         game.board.delete(player.bubble);
         game.remotePlayers.splice(playerIdx, 1);
+      });
+      
+      game.socket.on("request-bubbles", function (data) {
+        var bubbles = game.board.bubbles.map(function (bubble) {
+          return bubble.data();
+        });
+        
+        var responseData = {
+          forId: data.forId,
+          bubbles: bubbles
+        };
+        game.socket.emit("receive-bubbles", responseData);
       });
     },
     
@@ -88,16 +100,19 @@
       this.board.update();
       this.board.render();
       if (!this.over && this.isWon()) {
-        alert("Domination.");
-        this.over = true;
+        // alert("Domination.");
+        // this.over = true;
       } else if (this.isLost()) {
-        alert("You have been absorbed.");
-        this.stop();
+        // alert("You have been absorbed.");
+        // this.stop();
       }
     },
 
     start: function () {
       this.installSocketHandlers();
+      var bubble = this.player.bubble;
+      var data = bubble.data();
+      Cosmos.socket.emit("new-player", data);
       this.interval = setInterval(this.step.bind(this), Game.INTERVAL);
     },
     
@@ -110,20 +125,17 @@
 
 $(function () {
   Cosmos.socket = io.connect();
-  var game = new Cosmos.Game(Cosmos.socket);
-  game.start();
-  var bubble = game.player.bubble;
-  var data = {
-    radius: bubble.radius,
-    pos: bubble.pos,
-    vel: bubble.vel,
-    color: bubble.color
-  };
-  Cosmos.socket.emit("new-player", data);
-  // Cosmos.socket.on("new-game", function (data) {
-//     game = new Cosmos.Game(Cosmos.socket, data);
-//     socket.emit("started-game", game);
-//     game.start();
-//   });
+  
+  Cosmos.socket.on("new-game", function () {
+    console.log("new game!");
+    window.game = new Cosmos.Game(Cosmos.socket);
+    window.game.start();
+  });
+  
+  Cosmos.socket.on("join-game", function (data) {
+    console.log("joining game!");
+    window.game = new Cosmos.Game(Cosmos.socket, data);
+    window.game.start();
+  });
 
 });
