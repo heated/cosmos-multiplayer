@@ -6,7 +6,7 @@
     this.pos = pos;
     this.vel = vel;
     this.board = board;
-    this.color = color || "black";
+    this.color = color || "white";
   }
 
   _(Bubble.prototype).extend({
@@ -68,34 +68,26 @@
     },
     
     expel: function (dir) {
-      var radius = Math.sqrt(this.mass() * 0.05);
+      var radius = this.radius / 10;
       
+      var unitDir = [Math.cos(dir), -Math.sin(dir)];
       var x = this.pos[0];
       var y = this.pos[1];
       var distance = this.radius + radius;
-      var positions = {
-        up: [x, y - distance],
-        down: [x, y + distance],
-        left: [x - distance, y],
-        right: [x + distance, y]
-      };
+      var pos = [x + unitDir[0] * distance, y + unitDir[1] * distance];
       
-      var velocities = {
-        up: [0, -0.2],
-        down: [0, 0.2],
-        left: [-0.2, 0],
-        right: [0.2, 0]
-      };
-            
-      var expelled = new Bubble(
-        radius,
-        positions[dir],
-        velocities[dir],
-        this.board
-      );
+      var velX = this.vel[0];
+      var velY = this.vel[1];
+      var vel = [velX + (unitDir[0] * 2), velY + (unitDir[1] * 2)];
       
+      var expelled = new Bubble(radius, pos, vel, this.board);
       this.board.add(expelled);
-      this.radius = Math.sqrt(this.mass() * 0.95);
+
+      var momentum = this.momentum();
+      var expelledMomentum = expelled.momentum();
+      this.radius = Math.sqrt(this.mass() - expelled.mass());
+      this.vel[0] = (momentum[0] - expelledMomentum[0]) / this.mass();
+      this.vel[1] = (momentum[1] - expelledMomentum[1]) / this.mass();
     },
     
     grow: function (amount) {
@@ -124,6 +116,13 @@
       return Math.pow(this.radius, 2);
     },
     
+    momentum: function () {
+      var mass = this.mass();
+      return this.vel.map(function (dir) {
+        return dir * mass;
+      });
+    },
+    
     move: function () {
       this.pos[0] += this.vel[0];
       this.pos[1] += this.vel[1];
@@ -131,7 +130,7 @@
     },
     
     render: function (ctx) {
-      // ctx.fillStyle = "black";
+      ctx.fillStyle = "black";
       ctx.beginPath();
 
       ctx.arc(

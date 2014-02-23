@@ -63,6 +63,9 @@
 
     render: function() {
       this.ctx.clearRect(0, 0, 800, 500);
+      this.ctx.fillStyle = "black";
+      this.ctx.fillRect(0, 0, 800, 500);
+      
       var that = this;
       this.bubbles.forEach(function(bubble) {
         bubble.render(that.ctx);

@@ -12,37 +12,32 @@
 
   _(Game.prototype).extend({
     
-    installKeyHandlers: function () {
+    handleInput: function () {
       var game = this;
       
-      $(document).on("keydown", function (event) {
-        var dir;
-        switch (event.which) {
-          case 38:
-            dir = "up";
-            break;
-          case 40:
-            dir = "down";
-            break;
-          case 37:
-            dir = "left";
-            break;
-          case 39:
-            dir = "right";
-            break;
-        }
-        
-        game.player.changeVel(dir);
+      var keyDirOpposites = {
+        38: 3 * Math.PI / 2, // down
+        40: Math.PI / 2, // up
+        37: 0, // right
+        39: Math.PI // left
+      };
+      
+      var keys = key.getPressedKeyCodes().filter(function (keycode) {
+        return [37, 38, 39, 40].indexOf(keycode) != -1;
+      });
+      
+      keys.forEach(function (key) {
+        game.player.expel(keyDirOpposites[key]);
       });
     },
     
     step: function() {
+      this.handleInput();
       this.board.update();
       this.board.render();
     },
 
     start: function() {
-      this.installKeyHandlers();
       setInterval(this.step.bind(this), Game.INTERVAL);
     }
   });
