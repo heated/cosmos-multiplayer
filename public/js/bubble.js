@@ -195,7 +195,7 @@
     },
     
     random: function (board) {
-      var radius = Math.random() * 20 + 5;
+      var radius = Math.random() * 10 + 5;
       var direction = Math.random() * Math.PI * 2;
 
       return new Bubble(radius, 

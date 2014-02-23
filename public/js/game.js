@@ -20,11 +20,11 @@
     handleInput: function () {
       var game = this;
       
-      var keyDirOpposites = {
-        38: 3 * Math.PI / 2, // down
-        40: Math.PI / 2, // up
-        37: 0, // right
-        39: Math.PI // left
+      var keyDirs = {
+        38: Math.PI / 2, // up
+        40: 3 * Math.PI / 2, // down
+        37: Math.PI, // left
+        39: 0 // right
       };
       
       var keys = key.getPressedKeyCodes().filter(function (keycode) {
@@ -32,10 +32,9 @@
       });
       
       keys.forEach(function (key) {
-        game.player.bubble.expel(keyDirOpposites[key]);
+        game.player.bubble.expel(keyDirs[key]);
         var data = {
-          key: key,
-          // bubbles: game.board.data()
+          key: key
         };
         game.socket.emit("keydown", data);
       });
@@ -59,17 +58,15 @@
       game.socket.on("keydown", function (data) {
         var playerIdx = playerById(data.id);
         var player = game.remotePlayers[playerIdx];
-        
-        // game.board.updateFromData(data.bubbles);
-        
-        var keyDirOpposites = {
-          38: 3 * Math.PI / 2, // down
-          40: Math.PI / 2, // up
-          37: 0, // right
-          39: Math.PI // left
+              
+        var keyDirs = {
+          38: Math.PI / 2, // up
+          40: 3 * Math.PI / 2, // down
+          37: Math.PI, // left
+          39: 0 // right
         };
         
-        player.bubble.expel(keyDirOpposites[data.key]);
+        player.bubble.expel(keyDirs[data.key]);
       });
       
       game.socket.on("new-player", function (data) {
@@ -92,15 +89,29 @@
       });
       
       game.socket.on("request-bubbles", function (data) {
-        var bubbles = game.board.bubbles.map(function (bubble) {
+        var bubblesCopy = game.board.bubbles.slice(0);
+        var playerIdx = bubblesCopy.indexOf(game.player.bubble);
+        if (playerIdx != -1) {
+          bubblesCopy.splice(playerIdx, 1);
+        }
+        var bubbles = bubblesCopy.map(function (bubble) {
           return bubble.data();
         });
-        
+                
         var responseData = {
           forId: data.forId,
           bubbles: bubbles
         };
         game.socket.emit("receive-bubbles", responseData);
+      });
+      
+      game.socket.on("request-update", function (data) {
+        var responseData = {
+          forId: data.forId,
+          bubble: game.player.bubble.data()
+        };
+        
+        game.socket.emit("player-update", responseData);
       });
     },
     
@@ -117,11 +128,11 @@
       this.board.update();
       this.board.render();
       if (!this.over && this.isWon()) {
-        // alert("Domination.");
-        // this.over = true;
-      } else if (this.isLost()) {
-        // alert("You have been absorbed.");
-        // this.stop();
+        alert("Domination.");
+        this.over = true;
+      } else if (!this.over && this.isLost()) {
+        alert("You have been absorbed.");
+        this.over = true;
       }
     },
 

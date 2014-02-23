@@ -43,7 +43,7 @@
     initializeBubbles: function () {
       var board = this;
       if (!this.options || !this.options.bubbles) {
-        this.makeBubbles(20);
+        this.makeBubbles(100);
       } else {
         var bubbles = this.options.bubbles.map(function (bubbleData) {
           var newBubble = Cosmos.Bubble.fromData(bubbleData, board);
