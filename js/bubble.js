@@ -13,12 +13,17 @@
     
     absorb: function (bubble) {
       var dSq = this.distanceSq(bubble);
+      var initialMass = this.mass();
       var totalMass = this.mass() + bubble.mass();
-
+      var bigMomentum = this.momentum();
+      var smallMomentum, newMass;
+      
       // completely absorbed
       if (totalMass >= dSq) {
         this.radius = Math.sqrt(totalMass);
         this.board.delete(bubble);
+        newMass = this.mass();
+        smallMomentum = bubble.momentum();
       } else {
         var d = Math.sqrt(dSq);
 
@@ -29,7 +34,19 @@
 
         this.radius = quadratic;
         bubble.radius = d - this.radius;
+        
+        newMass = this.mass();
+        var massDiff = newMass - initialMass;
+        smallMomentum = bubble.vel.map(function (dir) {
+          return dir * massDiff;
+        });
       }
+      
+      var newMomentum = [bigMomentum[0] + smallMomentum[0],
+                         bigMomentum[1] + smallMomentum[1]];
+      this.vel = newMomentum.map(function (dir) {
+        return dir / newMass;
+      });
     },
     
     changeVel: function (dir) {
