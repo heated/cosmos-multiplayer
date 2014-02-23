@@ -141,12 +141,13 @@
     
     render: function (ctx) {
       ctx.fillStyle = "black";
+      ctx.lineWidth = this.radius / 10;
       ctx.beginPath();
 
       ctx.arc(
         this.pos[0],
         this.pos[1],
-        this.radius,
+        this.radius - (ctx.lineWidth / 2),
         0,
         Math.PI * 2
       );

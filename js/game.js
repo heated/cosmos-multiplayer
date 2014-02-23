@@ -6,6 +6,8 @@
     var ctx = this.canvas.getContext("2d");
     this.board = new Cosmos.Board(ctx);
     this.player = this.board.makePlayerBubble();
+    this.totalMass = this.board.totalMass();
+    this.over = false;
   }
 
   Game.INTERVAL = 1000 / 60;
@@ -31,19 +33,39 @@
       });
     },
     
-    step: function() {
+    isLost: function () {
+      return this.board.bubbles.indexOf(this.player) == -1;
+    },
+    
+    isWon: function () {
+      return this.player.mass() * 2 > this.totalMass;
+    },
+    
+    step: function () {
       this.handleInput();
       this.board.update();
       this.board.render();
+      if (!this.over && this.isWon()) {
+        alert("Domination.");
+        this.over = true;
+      } else if (this.isLost()) {
+        alert("You have been absorbed.");
+        this.stop();
+      }
     },
 
-    start: function() {
-      setInterval(this.step.bind(this), Game.INTERVAL);
+    start: function () {
+      this.interval = setInterval(this.step.bind(this), Game.INTERVAL);
+    },
+    
+    stop: function () {
+      clearInterval(this.interval);
     }
+    
   });
 })(this);
 
-$(function() {
+$(function () {
   game = new Cosmos.Game();
   game.start();
 });

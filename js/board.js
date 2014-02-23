@@ -1,7 +1,7 @@
 (function(root) {
   var Cosmos = root.Cosmos = (root.Cosmos || {});
 
-  var Board = Cosmos.Board = function(ctx) {
+  var Board = Cosmos.Board = function (ctx) {
     this.ctx = ctx;
     this.bubbles = [];
     this.makeBubbles(200);
@@ -34,7 +34,7 @@
       });
     },
     
-    makeBubbles: function(num) {
+    makeBubbles: function (num) {
       var bubbles = this.bubbles;
       while(bubbles.length < num) {
         var newBubble = Cosmos.Bubble.random(this);
@@ -61,7 +61,7 @@
       return playerBubble;
     },
 
-    render: function() {
+    render: function () {
       this.ctx.clearRect(0, 0, 800, 500);
       this.ctx.fillStyle = "black";
       this.ctx.fillRect(0, 0, 800, 500);
@@ -71,8 +71,17 @@
         bubble.render(that.ctx);
       });
     },
+    
+    totalMass: function () {
+      var total = 0;
+      this.bubbles.forEach(function (bubble) {
+        total += bubble.mass();
+      });
+      
+      return total;
+    },
 
-    update: function() {
+    update: function () {
       this.bubbles.forEach(function(bubble) {
         bubble.move();
       });
