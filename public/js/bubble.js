@@ -100,8 +100,8 @@
       var momentum = this.momentum();
       var expelledMomentum = expelled.momentum();
       this.radius = Math.sqrt(this.mass() - expelled.mass());
-      this.vel[0] = (momentum[0] - expelledMomentum[0]) / this.mass();
-      this.vel[1] = (momentum[1] - expelledMomentum[1]) / this.mass();
+      this.vel[0] = (momentum[0] - expelledMomentum[0] * 3) / this.mass();
+      this.vel[1] = (momentum[1] - expelledMomentum[1] * 3) / this.mass();
     },
     
     handleCollision: function (bubble) {

@@ -49,6 +49,7 @@
             return i;
           } 
         }
+        return -1;
       };
       
       game.socket.on("connect", function () {
@@ -56,9 +57,11 @@
       });
       
       game.socket.on("keydown", function (data) {
+        console.log(game.remotePlayers);
         var playerIdx = playerById(data.id);
         if (playerIdx != -1) {
           var player = game.remotePlayers[playerIdx];
+          console.log(playerIdx, player);
               
           var keyDirs = {
             38: Math.PI / 2, // up
@@ -158,9 +161,9 @@
 $(function () {
   Cosmos.socket = io.connect();
   
-  Cosmos.socket.on("new-game", function () {
+  Cosmos.socket.on("new-game", function (data) {
     console.log("new game!");
-    window.game = new Cosmos.Game(Cosmos.socket);
+    window.game = new Cosmos.Game(Cosmos.socket, data);
     window.game.start();
   });
   
