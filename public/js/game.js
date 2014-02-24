@@ -57,7 +57,6 @@
       });
       
       game.socket.on("keydown", function (data) {
-        console.log(game.remotePlayers);
         var playerIdx = playerById(data.id);
         if (playerIdx != -1) {
           var player = game.remotePlayers[playerIdx];
